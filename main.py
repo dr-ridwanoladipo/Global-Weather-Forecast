@@ -3,6 +3,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from backend import get_data, get_air_quality
 import pandas as pd
+from datetime import datetime, timedelta
 
 # Set page config
 st.set_page_config(page_title="Advanced Weather Forecast", layout="wide")
@@ -30,7 +31,7 @@ st.markdown("Get detailed weather information for any location worldwide!")
 # Sidebar for user inputs
 with st.sidebar:
     st.header("📍 Location Settings")
-    place = st.text_input("Enter a city name:", "London")
+    place = st.text_input("Enter a city name:", "Osogbo")
     days = st.slider("Forecast Days", min_value=1, max_value=5, value=3, help="Select the number of forecasted days")
 
     st.header("🔍 Data Options")
@@ -84,6 +85,10 @@ try:
     df_daily.index = pd.to_datetime(df_daily.index)
     df_daily = df_daily.reset_index().rename(columns={'index': 'Date'})
 
+    # Ensure dates are correct and in order
+    today = datetime.now().date()
+    df_daily['Date'] = [today + timedelta(days=i) for i in range(len(df_daily))]
+
     # Convert temperatures
     df_daily['temp_min'] = df_daily['temp_min'].apply(lambda x: convert_temp(x, temp_unit))
     df_daily['temp_max'] = df_daily['temp_max'].apply(lambda x: convert_temp(x, temp_unit))
@@ -99,7 +104,7 @@ try:
     cols = st.columns(len(df_daily))
     for idx, (_, row) in enumerate(df_daily.iterrows()):
         with cols[idx]:
-            st.write(f"**{row['Date'].strftime('%Y-%m-%d')}**")
+            st.write(f"**{row['Date'].strftime('%b %d')}**")
             st.image(f"http://openweathermap.org/img/wn/{row['icon']}@2x.png", width=50)
             st.write(f"Max: {row['temp_max']:.1f}°{'C' if temp_unit == 'Celsius' else 'K'}")
             st.write(f"Min: {row['temp_min']:.1f}°{'C' if temp_unit == 'Celsius' else 'K'}")
@@ -144,7 +149,7 @@ try:
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
-    st.write("Please make sure you've entered a valid city name and try again!.")
+    st.write("Please make sure you've entered a valid city name and try again.")
 
 # Footer
 st.markdown("---")
