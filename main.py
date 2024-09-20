@@ -9,8 +9,12 @@ from datetime import datetime, timedelta
 st.set_page_config(page_title="Advanced Weather Forecast", layout="wide")
 
 # Custom CSS to improve the app's appearance
+# Hide Streamlit default menu and footer
 st.markdown("""
 <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
     .reportview-container {
         background: linear-gradient(to right, #4880EC, #019CAD);
     }
@@ -28,16 +32,16 @@ st.markdown("""
 st.title("🌦️ Advanced Weather Forecast")
 st.markdown("Get detailed weather information for any location worldwide!")
 
-# Sidebar for user inputs
-with st.sidebar:
+# Collapsible sidebar using st.expander
+with st.expander("☰ Menu"):
     st.header("📍 Location Settings")
-    place = st.text_input("Enter a city name:", "Osogbo")
-    days = st.slider("Forecast Days", min_value=1, max_value=5, value=3, help="Select the number of forecasted days")
+    place = st.text_input("Enter a city name:", "Osogbo", key="place_input")
+    days = st.slider("Forecast Days", min_value=1, max_value=5, value=3, help="Select the number of forecasted days", key="days_slider")
 
     st.header("🔍 Data Options")
-    temp_unit = st.radio("Temperature Unit:", ("Celsius", "Kelvin"))
+    temp_unit = st.radio("Temperature Unit:", ("Celsius", "Kelvin"), key="temp_unit_radio")
 
-    show_hourly = st.checkbox("Show Hourly Forecast", value=False)
+    show_hourly = st.checkbox("Show Hourly Forecast", value=False, key="show_hourly_checkbox")
 
 
 # Function to convert temperature
@@ -45,7 +49,6 @@ def convert_temp(temp, to_unit):
     if to_unit == "Kelvin":
         return temp + 273.15
     return temp
-
 
 # Main content
 try:
@@ -131,7 +134,7 @@ try:
 
         fig = px.line(df_hourly, x='dt_txt', y='temp', title='Hourly Temperature Forecast')
         fig.update_layout(xaxis_title='Date and Time',
-                          yaxis_title=f'Temperature (°{"C" if temp_unit == "Celsius" else "K"})')
+                          yaxis_title=f'Temperature (°{"C" if temp_unit == 'Celsius' else 'K'})')
         st.plotly_chart(fig)
 
     # Additional city information
@@ -145,7 +148,7 @@ try:
         st.write(f"**Sunset:** {pd.to_datetime(data['city_info']['sunset'], unit='s').strftime('%H:%M:%S')}")
 
     # Disclaimer
-    st.info("Note: Forecast data is based on a free API subscription and may change when the subscription expires..")
+    st.info("Note: Forecast data is based on a free API subscription and may change when the subscription expires.")
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
@@ -154,4 +157,3 @@ except Exception as e:
 # Footer
 st.markdown("---")
 st.markdown("Created with ❤️ by @dr.ridwan.oladipo@gmail.com")
-
