@@ -30,7 +30,7 @@ st.markdown("Get detailed weather information for any location worldwide!")
 # Sidebar for user inputs
 with st.sidebar:
     st.header("📍 Location Settings")
-    place = st.text_input("Enter a city name:", "Tokyo")
+    place = st.text_input("Enter a city name:", "Ife")
     days = st.slider("Forecast Days", min_value=1, max_value=5, value=3, help="Select the number of forecasted days")
 
     st.header("🔍 Data Options")
@@ -105,12 +105,23 @@ try:
             st.write(f"Min: {row['temp_min']:.1f}°{'C' if temp_unit == 'Celsius' else 'K'}")
             st.write(f"{row['description'].capitalize()}")
 
+    # Precipitation Probability Bar Chart
+    st.header("🌧️ Precipitation Probability")
+    df_hourly = pd.DataFrame(data['forecast'])
+    df_hourly['dt_txt'] = pd.to_datetime(df_hourly['dt_txt'])
+    df_hourly['date'] = df_hourly['dt_txt'].dt.date
+    daily_pop = df_hourly.groupby('date')['pop'].mean().reset_index()
+
+    fig_pop = px.bar(daily_pop, x='date', y='pop',
+                     labels={'pop': 'Probability of Precipitation', 'date': 'Date'},
+                     title='Daily Precipitation Probability')
+    fig_pop.update_traces(marker_color='skyblue')
+    fig_pop.update_layout(yaxis_tickformat='.0%')
+    st.plotly_chart(fig_pop)
+
     # Hourly forecast (if selected)
     if show_hourly:
         st.header("⏰ Hourly Forecast")
-        hourly_data = data['forecast']
-        df_hourly = pd.DataFrame(hourly_data)
-        df_hourly['dt_txt'] = pd.to_datetime(df_hourly['dt_txt'])
         df_hourly['temp'] = df_hourly['main'].apply(lambda x: convert_temp(x['temp'], temp_unit))
 
         fig = px.line(df_hourly, x='dt_txt', y='temp', title='Hourly Temperature Forecast')
@@ -129,7 +140,7 @@ try:
         st.write(f"**Sunset:** {pd.to_datetime(data['city_info']['sunset'], unit='s').strftime('%H:%M:%S')}")
 
     # Disclaimer
-    st.info("Note: This forecast data is provided by OpenWeatherMap and is subject to change.")
+    st.info("Note: Forecast data is based on a free API subscription and may change when the subscription expires..")
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
@@ -137,5 +148,5 @@ except Exception as e:
 
 # Footer
 st.markdown("---")
-st.markdown("Created with ❤️ by Dr Ridwan Oladipo")
+st.markdown("Created with ❤️ by @dr.ridwan.oladipo@gmail.com")
 
