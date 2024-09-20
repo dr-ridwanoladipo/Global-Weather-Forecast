@@ -144,7 +144,7 @@ try:
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
-    st.write("Please make sure you've entered a valid city name and try again.")
+    st.write("Please make sure you've entered a valid city name and try again!.")
 
 # Footer
 st.markdown("---")

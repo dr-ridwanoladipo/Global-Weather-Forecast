@@ -16,7 +16,7 @@ def get_data(place, forecast_days=None):
     Fetch weather forecast data for a specific location and number of days.
 
     Args:
-        place (str): The location for which to get the weather forecast.
+        place (str): The location for which to get the weather forecast
         forecast_days (int, optional): The number of days to forecast. Defaults to None.
 
     Returns:
