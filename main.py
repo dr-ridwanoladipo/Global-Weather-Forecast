@@ -30,7 +30,7 @@ st.markdown("Get detailed weather information for any location worldwide!")
 # Sidebar for user inputs
 with st.sidebar:
     st.header("📍 Location Settings")
-    place = st.text_input("Enter a city name:", "Ife")
+    place = st.text_input("Enter a city name:", "London")
     days = st.slider("Forecast Days", min_value=1, max_value=5, value=3, help="Select the number of forecasted days")
 
     st.header("🔍 Data Options")
