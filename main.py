@@ -25,6 +25,18 @@ st.markdown("""
     .medium-font {
         font-size:20px !important;
     }
+    
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #2c3e50;
+        color: white;
+        text-align: center;
+        padding: 10px 0;
+        font-weight: bold;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -155,5 +167,11 @@ except Exception as e:
     st.write("Please make sure you've entered a valid city name and try again.")
 
 # Footer
-st.markdown("---")
-st.markdown("Created with ❤️ by @dr.ridwan.oladipo@gmail.com")
+st.markdown(
+        """
+        <div class="footer">
+        © 2024 All Rights Reserved | Dr. Ridwan Oladipo
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
